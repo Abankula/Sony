@@ -1,0 +1,32 @@
+SELECT
+  NAME as TASK_NAME,
+  date_trunc(
+    'second',
+    CONVERT_TIMEZONE('America/Chicago', SCHEDULED_TIME)
+  ) as SCHEDULED_TIME,
+  INITCAP(STATE) as STATE,
+  date_trunc(
+    'second',
+    CONVERT_TIMEZONE('America/Chicago', QUERY_START_TIME)
+  ) as QUERY_START_TIME,
+  date_trunc(
+    'second',
+    CONVERT_TIMEZONE('America/Chicago', COMPLETED_TIME)
+  ) as COMPLETED_TIME,
+  TIMESTAMPDIFF('millisecond', QUERY_START_TIME, COMPLETED_TIME) as DURATION,
+  SCHEMA_NAME,
+  DATABASE_NAME,
+  ERROR_CODE,
+  ERROR_MESSAGE,
+  QUERY_ID,
+  RETURN_VALUE
+FROM
+  snowflake.account_usage.task_history
+WHERE
+  SCHEDULED_TIME >= TO_TIMESTAMP_LTZ('2024-03-12T06:00:00.000Z', 'AUTO')
+  //AND SCHEDULED_TIME < TO_TIMESTAMP_LTZ('2024-02-25T06:00:00.000Z', 'AUTO')
+ORDER BY
+  SCHEDULED_TIME DESC
+//LIMIT
+ // 250
+  ;
